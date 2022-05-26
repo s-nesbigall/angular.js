@@ -68,15 +68,35 @@ function currencyFilter($locale) {
       fractionSize = formats.PATTERNS[1].maxFrac;
     }
 
-    // If the currency symbol is empty, trim whitespace around the symbol
-    var currencySymbolRe = !currencySymbol ? /\s*\u00A4\s*/g : /\u00A4/g;
-
     // if null or undefined pass it through
     return (amount == null)
         ? amount
-        : formatNumber(amount, formats.PATTERNS[1], formats.GROUP_SEP, formats.DECIMAL_SEP, fractionSize).
-            replace(currencySymbolRe, currencySymbol);
+        : currencySymbolReReplace(
+            formatNumber(amount, formats.PATTERNS[1], formats.GROUP_SEP, formats.DECIMAL_SEP, fractionSize),
+            currencySymbol
+          );
   };
+
+  function currencySymbolReReplace(input, currencySymbol) {
+    if (!input.length) {
+      return input;
+    }
+    // avoid the REDoS by doing this manually, because JS doesn't have positive quantifiers
+    // If the currency symbol is empty, trim whitespace around the symbol
+    var sp = input.split('\u00A4');
+    if (!currencySymbol) {
+      var i;
+      for (i=0; i < sp.length; i++) {
+        if (i > 0) {
+          sp[i] = sp[i].replace(/^\s+/, '');
+        }
+        if (i < sp.length - 1) {
+          sp[i] = sp[i].replace(/\s+$/, '');
+        }
+      }
+    }
+    return sp.join(currencySymbol);
+  }
 }
 
 /**
