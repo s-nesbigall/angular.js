@@ -1,0 +1,8 @@
+{
+  "name": "angularjs-vulnerability-reproduction",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "angular": "1.8.3"
+  }
+}

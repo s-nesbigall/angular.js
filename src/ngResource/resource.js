@@ -607,6 +607,13 @@ angular.module('ngResource', ['ng']).
             encodedVal,
             protocolAndIpv6 = '';
 
+          // CVE-2023-26117: A regular expression used by the $resource service to strip trailing slashes is vulnerable to super-linear runtime due to backtracking. With a large carefully-crafted input, this can result in catastrophic backtracking and cause a denial of service of the application, also known as a ReDoS attack.
+          // As a mitigation the length of the url should be restricted to 10000 characters.
+          if (url.length > 10000) {
+            window.console.error('Angular: You are trying to parse a large url ($resource(url).query()). Mitigation of CVE-2023-26117: Better to throw an error than to crash the browser.');
+            return;
+          }
+
           var urlParams = self.urlParams = Object.create(null);
           forEach(url.split(/\W/), function(param) {
             if (param === 'hasOwnProperty') {

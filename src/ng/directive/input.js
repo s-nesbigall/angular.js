@@ -1940,7 +1940,9 @@ function urlInputType(scope, element, attr, ctrl, $sniffer, $browser) {
 
   ctrl.$validators.url = function(modelValue, viewValue) {
     var value = modelValue || viewValue;
-    return ctrl.$isEmpty(value) || URL_REGEXP.test(value);
+    // CVE-2023-26118: A regular expression used to validate the value of the input[url] directive is vulnerable to super-linear runtime due to backtracking. With a large carefully-crafted input, this can result in catastrophic backtracking and cause a denial of service of the application, also known as a ReDoS attack.
+    // As a mitigation the length of the pattern should be restricted to 10000 characters.
+    return ctrl.$isEmpty(value) || (value.length <= 10000 && URL_REGEXP.test(value));
   };
 }
 

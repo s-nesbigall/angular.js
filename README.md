@@ -1,6 +1,50 @@
 AngularJS [![CircleCI](https://circleci.com/gh/angular/angular.js/tree/master.svg?style=shield)](https://circleci.com/gh/angular/workflows/angular.js/tree/master)
 =========
 
+# Security Mitigation:
+
+The following CVEs has been mitigated. In order those mitigations are working,
+there are POC examples to reproduce the problems in /cve of this repository.
+
+To reproduce the attack, change the according index.html to point to the angular.js (1.8.3)
+version in node_modules (npm install first).
+
+To test the mitigation build this repo (yarn grunt package (node 12.22.12)) and change the according index.html
+to point to /build/angular.js.
+
+## CVE-2022-25869 Is not mitigated: Don't ever use Internet Explorer.
+
+## CVE-2022-25844
+In order to reproduce the problem see /cve/CVE-2022-25844/ (run with angular from node_modules).
+
+This was mitigated by https://github.com/continu/angular.js by doing a manual replacement of the positive quantifiers.
+See https://github.com/angular/angular.js/compare/master...continu:angular.js:master
+in /src/ng/filter/filters.
+
+## CVE-2023-26116
+In order to reproduce the problem see /cve/CVE-2023-26116/ (run with angular from node_modules).
+
+This was mitigated by checking the length (max 10000 characters) of the RegExp pattern when one is found in angular.copy.
+An error is thrown if there are to many characters.
+See /src/Angular.js#1004.
+
+## CVE-2023-26117
+In order to reproduce the problem see /cve/CVE-2023-26117/ (run with angular from node_modules).
+
+This was mitigated by checking the length (max 10000 characters) of the url in setUrlParams.
+An error is thrown if there are to many characters.
+See /src/ngResource/resource.js#612.
+
+## CVE-2023-26118
+In order to reproduce the problem see /cve/CVE-2023-26118/ (run with angular from node_modules).
+
+This was mitigated by checking the length (max 10000 characters) of the url in the input.
+The url is invalid if there are to many characters.
+See /src/ng/directive/input.js#1945.
+
+
+=========
+
 AngularJS lets you write client-side web applications as if you had a smarter browser.  It lets you
 use good old HTML (or HAML, Jade/Pug and friends!) as your template language and lets you extend HTML’s
 syntax to express your application’s components clearly and succinctly.  It automatically

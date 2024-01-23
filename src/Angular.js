@@ -999,6 +999,12 @@ function copy(source, destination, maxDepth) {
         return new source.constructor(source.valueOf());
 
       case '[object RegExp]':
+        // CVE-2023-26116: A regular expression used by the angular.copy() utility function to copy RegExp objects is vulnerable to super-linear runtime due to backtracking. With a large carefully-crafted input, this can result in catastrophic backtracking and cause a denial of service of the application, also known as a ReDoS attack.
+        // As a mitigation the length of the pattern should be restricted to 10000 characters.
+        if (source.toString().length > 10000) {
+          window.console.error('Angular: You are trying to angular.copy a large RegExp. Mitigation of CVE-2023-26116: Better to throw an error than to crash the browser.');
+          return;
+        }
         var re = new RegExp(source.source, source.toString().match(/[^/]*$/)[0]);
         re.lastIndex = source.lastIndex;
         return re;
