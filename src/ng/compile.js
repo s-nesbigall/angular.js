@@ -2096,6 +2096,13 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       var result = '';
 
+      // CVE-2024-21490: This affects versions of the package angular from 1.3.0. A regular expression used to split the value of the ng-srcset directive is vulnerable to super-linear runtime due to backtracking. With large carefully-crafted input, this can result in catastrophic backtracking and cause a denial of service.
+      // As a mitigation the length of the pattern should be restricted to 10000 characters.
+      if (value.length > 10000) {
+        window.console.error('Angular: You are trying to sanitize a large url string. Mitigation of CVE-2024-21490: Better to throw an error than to crash the browser.');
+        return;
+      }
+
       // first check if there are spaces because it's not the same pattern
       var trimmedSrcset = trim(value);
       //                (   999x   ,|   999w   ,|   ,|,   )

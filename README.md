@@ -12,6 +12,14 @@ version in node_modules (npm install first).
 To test the mitigation build this repo (yarn grunt package (node 12.22.12)) and change the according index.html
 to point to /build/angular.js.
 
+## CVE-2024-21490
+
+In order to reproduce the problem see /cve/CVE-2024-21490/ (run with angular from node_modules).
+
+This was mitigated by checking the length (max 10000 characters) of the RegExp pattern when one is found in sanitizeSrcset.
+An error is thrown if there are to many characters.
+See /src/ng/compile.js#2099.
+
 ## CVE-2022-25869 Is not mitigated: Don't ever use Internet Explorer.
 
 ## CVE-2022-25844
