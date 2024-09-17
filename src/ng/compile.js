@@ -3824,7 +3824,9 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       }
       // All nodes with src attributes require a RESOURCE_URL value, except for
       // img and various html5 media nodes, which require the MEDIA_URL context.
-      if (attrNormalizedName === 'src' || attrNormalizedName === 'ngSrc') {
+      // CVE-2024-8373: Setting a <source> element's srcset attribute value via the ngAttrSrcset directive or interpolation is not subject to image source sanitization.
+      // This is mitigated by returning sce.MEDIA_URL for <source> elements with srcset attribute values.
+      if (attrNormalizedName === 'src' || attrNormalizedName === 'ngSrc' || attrNormalizedName === 'srcset' || attrNormalizedName === 'ngSrcset') {
         if (['img', 'video', 'audio', 'source', 'track'].indexOf(nodeName) === -1) {
           return $sce.RESOURCE_URL;
         }
@@ -3856,6 +3858,12 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
     }
 
     function sanitizeSrcsetPropertyValue(value) {
+      // CVE-2024-8372: Some specially-crafted ngSrcset, ngAttrSrcset and ngPropSrcset values to bypass the image source sanitization restrictions and show images that should be blocked.
+      // This is mitigated by blocking any comma seperated multi srcset urls (all urls containing (,)).
+      if (value.includes(',')) {
+        window.console.error('You are trying to set a dynamic srcset. Mitigation of CVE-2024-8372: Blocked unsafe dynamic srcset.');
+        return '';
+      }
       return sanitizeSrcset($sce.valueOf(value), 'ng-prop-srcset');
     }
     function addPropertyDirective(node, directives, attrName, propName) {

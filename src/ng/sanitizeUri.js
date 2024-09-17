@@ -74,6 +74,12 @@ function $$SanitizeUriProvider() {
       // if (!uri) return uri;
       var regex = isMediaUrl ? imgSrcSanitizationTrustedUrlList : aHrefSanitizationTrustedUrlList;
       var normalizedVal = urlResolve(uri && uri.trim()).href;
+      // CVE-2024-8372: Some specially-crafted ngSrcset, ngAttrSrcset and ngPropSrcset values to bypass the image source sanitization restrictions and show images that should be blocked.
+      // This is mitigated by blocking any comma seperated multi srcset urls (all urls containing (,)), that do not start with (data:).
+      if (normalizedVal.includes(',') && !normalizedVal.startsWith('data:')) {
+        window.console.error('You are trying to set a dynamic srcset. Mitigation of CVE-2024-8372: Blocked unsafe dynamic srcset.');
+        return '';
+      }
       if (normalizedVal !== '' && !normalizedVal.match(regex)) {
         return 'unsafe:' + normalizedVal;
       }

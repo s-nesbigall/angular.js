@@ -12,6 +12,21 @@ version in node_modules (npm install first).
 To test the mitigation build this repo (yarn grunt package (node 12.22.12)) and change the according index.html
 to point to /build/angular.js.
 
+## CVE-2024-8372
+
+In order to reproduce the problem see /cve/CVE-2024-8372/ (run with angular from node_modules).
+
+Some specially-crafted ngSrcset, ngAttrSrcset and ngPropSrcset values to bypass the image source sanitization restrictions and show images that should be blocked.
+This is mitigated by blocking any comma seperated multi srcset urls (all urls containing (,)), that do not start with (data:).
+
+## CVE-2024-8373
+
+In order to reproduce the problem see /cve/CVE-2024-8373/ (run with angular from node_modules).
+
+Setting a <source> element's srcset attribute value via the ngAttrSrcset directive or interpolation is not subject to image source sanitization.
+This was mitigated by returning sce.MEDIA_URL for <source> elements with srcset attribute values.
+See /src/ng/compile.js#3829.
+
 ## CVE-2024-21490
 
 In order to reproduce the problem see /cve/CVE-2024-21490/ (run with angular from node_modules).
