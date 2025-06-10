@@ -3836,6 +3836,10 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         if (nodeName === 'image') return $sce.MEDIA_URL;
         if (nodeName === 'a') return $sce.URL;
         return $sce.RESOURCE_URL;
+      } else if ((attrNormalizedName === 'href' || attrNormalizedName === 'ngHref') && nodeName === 'image') {
+        // CVE-2025-0716: Setting an <image> element's href attribute value via the ngHref directive or interpolation is not subject to image source sanitization.
+        // This is mitigated by returning sce.MEDIA_URL for <image> elements with href attribute values.
+        return $sce.MEDIA_URL;
       } else if (
           // Formaction
           (nodeName === 'form' && attrNormalizedName === 'action') ||

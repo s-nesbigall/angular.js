@@ -12,6 +12,25 @@ version in node_modules (npm install first).
 To test the mitigation build this repo (yarn grunt package (node 12.22.12)) and change the according index.html
 to point to /build/angular.js.
 
+## CVE-2025-0716
+
+In order to reproduce the problem see /cve/CVE-2025-0716/ (run with angular from node_modules).
+
+An improper sanitization vulnerability (CVE-2025-0716) has been identified in AngularJS, which allows attackers to bypass common image source restrictions normally applied to the value of the href or xlink:href attributes on <image> SVG elements. This bypass can further lead to a form of Content Spoofing. Similarly, the application's performance and behavior could be negatively affected by using too large or slow-to-load images.
+
+This was mitigated, by providing a trust context ($sce.MEDIA_URL) in case of <image> elements with such attributes.
+See /src/ng/compile.js#3840.
+
+## CVE-2025-2336
+
+In order to reproduce the problem see /cve/CVE-2025-2336/ (run with angular from node_modules).
+
+An improper sanitization vulnerability (CVE-2025-2336) has been identified in AngularJS' ngSanitize module, which allows attackers to bypass common image source restrictions normally applied to image elements. This bypass can further lead to a form of Content Spoofing. Similarly, the application's performance and behavior could be negatively affected by using too large or slow-to-load images.
+The bug lies within the sanitation process, image tags within a svg tag is not properly sanitized.
+
+This is mitigated by blocking the $SanitizeProvider.enableSvg which is a precondition for this vulnerabitlity.
+See /src/ngSanitize/sanitize.js#198.
+
 ## CVE-2024-8372
 
 In order to reproduce the problem see /cve/CVE-2024-8372/ (run with angular from node_modules).

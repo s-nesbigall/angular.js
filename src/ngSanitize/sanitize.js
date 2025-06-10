@@ -195,7 +195,9 @@ function $SanitizeProvider() {
    */
   this.enableSvg = function(enableSvg) {
     if (isDefined(enableSvg)) {
-      svgEnabled = enableSvg;
+      // CVE-2025-2336: SVG support cannot be enabled in $sanitizeProvider anymore.
+      window.console.error('Angular: You are trying to use $SanitizeProvider.enableSvg. Mitigation of CVE-2025-2336: SVG support cannot be enabled in $sanitizeProvider anymore.');
+      // svgEnabled = enableSvg;
       return this;
     } else {
       return svgEnabled;
