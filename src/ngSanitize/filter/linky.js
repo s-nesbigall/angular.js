@@ -152,6 +152,16 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
     var html = [];
     var url;
     var i;
+
+    // CVE-2025-4690: A Regular expression Denial of Service (ReDoS) vulnerability has been identified, which allows attackers to cause a denial of service of the application.
+    // Due to an implementation bug, the Regular Expression has a super-linear runtime relative to the input size.
+    // With a long, specially-crafted input, an attacker could cause a denial of service of the application, monopolizing browser resources or completely crash the application.
+    // As a mitigation the length of the pattern should be restricted to 20000 characters (the input is a text with links, not just a url.
+    // So this is a trade-off, between still running in most cases and does not lead to dos < 0.4 seconds).
+    if (raw.length > 20000) {
+      window.console.error('Angular: You are trying to parse a large url using linky. Mitigation of CVE-2025-4690: Better to throw an error than to crash the browser.');
+      throw linkyMinErr('inputtoobig', 'Input to linky is too big ({0} characters, only 20000 allowd). This is a mitigation of CVE-2025-4690.', raw.length);
+    }
     while ((match = raw.match(LINKY_URL_REGEXP))) {
       // We can not end in these as they are sometimes found at the end of the sentence
       url = match[0];

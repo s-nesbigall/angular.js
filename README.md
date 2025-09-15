@@ -12,6 +12,14 @@ version in node_modules (npm install first).
 To test the mitigation build this repo (yarn grunt package (node 12.22.12)) and change the according index.html
 to point to /build/angular.js.
 
+## CVE-2025-4690
+
+In order to reproduce the problem see /cve/CVE-2025-4690/ (run with angular from node_modules).
+
+A Regular expression Denial of Service (ReDoS) vulnerability has been identified, which allows attackers to cause a denial of service of the application. Due to an implementation bug, the Regular Expression has a super-linear runtime relative to the input size. With a long, specially-crafted input, an attacker could cause a denial of service of the application, monopolizing browser resources or completely crash the application.
+
+As a mitigation the length of the pattern should be restricted to 20000 characters. The input is a text with links, not just a url. So this is a trade-off, between still running in most cases and does not lead to dos < 0.4 seconds.
+
 ## CVE-2025-0716
 
 In order to reproduce the problem see /cve/CVE-2025-0716/ (run with angular from node_modules).
