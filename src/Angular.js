@@ -1153,14 +1153,9 @@ var csp = function() {
 
   return csp.rules;
 
+  // ELO - disable unsafe-eval, since it produces a CSP violation on every page load.
   function noUnsafeEval() {
-    try {
-      // eslint-disable-next-line no-new, no-new-func
-      new Function('');
-      return false;
-    } catch (e) {
-      return true;
-    }
+    return true;
   }
 };
 

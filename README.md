@@ -1,6 +1,12 @@
 AngularJS [![CircleCI](https://circleci.com/gh/angular/angular.js/tree/master.svg?style=shield)](https://circleci.com/gh/angular/workflows/angular.js/tree/master)
 =========
 
+# Changes
+The following changes have been made to the original AngularJS codebase:
+
+- Checking the presence of unsafe-eval will always fail: noUnsafeEval() will always return true,
+because it produces a CSP violation on every page load. See /src/Angular.js#1157.
+
 # Security Mitigation:
 
 The following CVEs has been mitigated. In order those mitigations are working,
