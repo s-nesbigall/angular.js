@@ -18,6 +18,17 @@ version in node_modules (npm install first).
 To test the mitigation build this repo (yarn grunt package (node 12.22.12)) and change the according index.html
 to point to /build/angular.js.
 
+## CVE-2026-11998
+
+In order to reproduce the problem see /cve/CVE-2026-11998/ (run with angular from node_modules).
+
+A Cross-Site Scripting (XSS) vulnerability (CVE-2026-11998) has been identified in AngularJS’ Strict Contextual Escaping (SCE) service, which allows attackers to bypass SCE policies for resource URLs and can lead to arbitrary JavaScript execution within the context of the victim's browser session.
+
+In essence the vulnerability comes from an OR "|" operator in the RegExp pattern of a SCE URL. Since OR has a higher prio than the complete match operators "^...\$" an input using a valid server after a hash or question mark or as comment of a data url can be used to bypass the SCE URL check.
+This was mitigated by wrapping the RegExp pattern in brackets "^(...)\$" in order to give the complete match the highest prio. See /src/ng/sce.js#71.
+
+## CVE-2024-33665 Is not mitigated: It affects the angular-translate, which is not needed in my application.
+
 ## CVE-2025-4690
 
 In order to reproduce the problem see /cve/CVE-2025-4690/ (run with angular from node_modules).
@@ -98,6 +109,9 @@ This was mitigated by checking the length (max 10000 characters) of the url in t
 The url is invalid if there are to many characters.
 See /src/ng/directive/input.js#1945.
 
+## CVE-2020-7676 and CVE-2019-10768
+These vulnerabilities were mitigated in AngularJS itself, only versions <1.8.0 and <1.7.9 are affected.
+This fork was made from 1.8.3 and is not affected by these vulnerabilities.
 
 =========
 
